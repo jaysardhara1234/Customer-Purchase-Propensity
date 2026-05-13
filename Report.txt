@@ -1,0 +1,146 @@
+# 📊 Data Preprocessing Justification Report
+
+## 📌 Objective
+The goal of preprocessing is to transform raw customer data into a clean, structured, and model-ready format while preserving meaningful patterns and minimizing noise.
+
+---
+
+# 🧠 1. Missing Value Handling
+
+### ✅ Technique Used:
+- Numerical → **KNN Imputation**
+- Categorical → **Mode Imputation**
+
+### 📌 Why KNN for Numerical?
+- Captures **feature relationships** instead of using simple averages
+- More accurate than mean/median when data has patterns
+- Preserves **local structure** of data
+
+### 📌 Why NOT Mean/Median?
+- Ignores relationships between features  
+- Can introduce bias in structured datasets  
+
+### 📌 Why Mode for Categorical?
+- Maintains **most frequent real category**
+- Simple and effective for nominal variables
+
+---
+
+# 📊 2. Outlier Handling (Income)
+
+### ✅ Technique Used:
+- **Winsorization (Capping)**
+
+### 📌 Why Winsorization?
+- Income contains **real-world extreme values**
+- Removing them would cause **loss of important business information**
+- Capping reduces impact without deleting data
+
+### 📌 Why NOT Outlier Removal?
+- High-income customers are valuable insights  
+- Removal leads to **data loss and bias**
+
+---
+
+# 📉 3. Skewness Treatment
+
+### ✅ Technique Used:
+- **log1p Transformation**
+
+### 📌 Why log1p?
+- Income is **right-skewed**
+- log1p compresses large values more than small ones
+- Helps achieve **more stable distribution**
+
+### 📌 Why NOT skip transformation?
+- Skewed data negatively affects:
+  - Distance-based models  
+  - Linear models  
+
+---
+
+# 🔢 4. Encoding
+
+### ✅ Technique Used:
+- **One-Hot Encoding** for categorical variables
+
+### 📌 Why One-Hot Encoding?
+- Avoids introducing **false ordinal relationships**
+- Suitable for nominal features like:
+  - Gender  
+  - City  
+
+### 📌 Why NOT Label Encoding?
+- Assigns numeric order (e.g., City A = 1, City B = 2)
+- Model may interpret as **ranking**, which is incorrect
+
+---
+
+# ⚖️ 5. Feature Scaling
+
+### ✅ Technique Used:
+- **StandardScaler**
+
+### 📌 Why StandardScaler?
+- Centers data around mean = 0 and std = 1  
+- Ensures **equal contribution of features**
+- Works well when:
+  - Outliers handled  
+  - Data is moderately distributed  
+
+### 📌 Why NOT RobustScaler?
+- Designed for datasets with **remaining outliers**
+- In this case:
+  - Outliers already handled  
+  - Skew reduced  
+
+### 📌 Why NOT MinMaxScaler?
+- Sensitive to range changes  
+- Compresses data excessively  
+
+---
+
+# 🔍 6. Why NOT Only RobustScaler?
+
+- Does NOT fix skewness  
+- Only reduces outlier influence during scaling  
+- Leaves distribution distorted  
+
+👉 Therefore, transformation (log1p) is still required
+
+---
+
+# 🧪 7. Design Philosophy
+
+> “Each preprocessing step should solve a specific problem without redundancy.”
+
+| Problem | Solution |
+|--------|---------|
+| Missing values | KNN / Mode |
+| Outliers | Winsorization |
+| Skewness | log1p |
+| Categorical data | OneHot |
+| Feature scale | StandardScaler |
+
+---
+
+# 📈 8. Result
+
+After preprocessing:
+- Data is **clean and consistent**
+- Distribution is **stable**
+- No extreme distortions
+- Features are **model-ready**
+
+---
+
+# 🚀 9. Conclusion
+
+The preprocessing pipeline was carefully designed to:
+- Preserve meaningful data patterns  
+- Avoid unnecessary transformations  
+- Ensure compatibility with machine learning algorithms  
+
+This approach balances **statistical correctness and real-world practicality**, making the dataset suitable for production-level ML applications.
+
+---
